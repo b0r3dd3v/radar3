@@ -1,0 +1,197 @@
+This file is part of Quipper. Copyright (C) 2011-2019. Please see the
+file COPYRIGHT for a list of authors, copyright holders, licensing,
+and other details. All rights reserved.
+
+======================================================================
+
+Old installation instructions
+=============================
+
+Note: these are the "legacy" installation instructions. Starting from
+version 0.9, Quipper is also available as a set of Cabal packages.
+For most users, we recommend installing Quipper using Cabal, because,
+among other things, the prerequisites will be installed automatically,
+and no special build tools (such as bash, make, and sed) are
+required. Please see README for instructions.
+
+To compile Quipper using the "legacy" method, i.e., using Makefiles and
+shell scripts, please see below.
+
+
+Installing the necessary components (legacy instructions)
+======================================================
+
+For installing on Linux, Mac OS X, and other Unix-like systems: please
+first see the instructions in INSTALLING, then continue to read below.
+
+For installing on Windows: please first see the instructions in
+INSTALLING.windows, then continue to read below.
+
+Configuring the software environment (legacy instructions)
+=======================================================
+
+Before you can compile Quipper, you have to install some Haskell
+libraries:
+
+ * random >= 1.0.1.1
+ * mtl >= 2.1.2
+ * primes >= 0.2.1.0
+ * Lattices >= 0.0.1 (note: "Lattices" must be capitalized)
+ * zlib >= 0.5.4.1
+ * easyrender >= 0.1.0.0
+ * fixedprec >= 0.2.1.0
+ * newsynth >= 0.3.0.1
+ * containers >= 0.5.2.1
+ * QuickCheck >= 2.12.5
+
+This can be done using Cabal. On the command line, use the
+following commands. Do this as a regular user (not with root or
+administrator access):
+
+cabal update
+
+then:
+
+cabal install random
+cabal install mtl
+cabal install primes
+cabal install Lattices
+cabal install zlib
+cabal install easyrender
+cabal install fixedprec
+cabal install newsynth
+cabal install containers
+cabal install QuickCheck
+
+Note: If you are using GHC 8.8, and you get an error message about
+"Backjump limit reached", try adding the option --max-backjumps=10000
+to cabal.
+
+Note: If you are using GHC 7, you also have to install:
+
+ * fail >= 4.9.0.0
+
+Note: When upgrading from a previous version of Quipper, please ensure
+that the fixedprec library is version 0.2.1.0 or newer; Quipper
+will not work with earlier versions of fixedprec. Also ensure that the
+newsynth library has been compiled against the same version of
+fixedprec as Quipper. If you get strange error messages related to
+fixedprec, try
+
+cabal install fixedprec 
+cabal install newsynth --reinstall
+
+You now have all the necessary Haskell libraries.
+
+Special note for GHC 7.4.2 (legacy instructions)
+=============================================
+
+The combination of GHC 7.4.2 and Template Haskell 2.8.0.0 is not
+possible, because it triggers a GHC bug. If you get a compilation
+error of the form: "ghc: panic! (the 'impossible' happened)", follow
+these steps:
+
+# Remove Template Haskell 2.8.0.0:
+
+ghc-pkg unregister --force template-haskell-2.8.0.0
+
+# Reinstall QuickCheck (because of a broken dependency). This will
+# also install template-haskell-2.7.0.0:
+
+cabal install QuickCheck
+
+Special note for GHC 7.10.* (legacy instructions)
+==============================================
+
+Quipper will not work with ghc 7.10. Please use ghc 7.8 or earlier, or
+ghc 8.0 or later.
+
+Browsing the documentation and source code (legacy instructions)
+=============================================================
+
+While it is possible the browse the Quipper source code in a text
+editor, it is much nicer to browse the documented source by pointing
+your web browser to doc/index.html in this Quipper distribution. The
+documented source is fully cross-referenced and indexed, with links to
+color-coded source files.
+
+
+Building the documentation (legacy instructions)
+=============================================
+
+Please note: our documentation uses special mark-up and requires
+custom tools to be built. Therefore it is not currently possible for
+users to re-build the documentation.
+
+
+Building the included algorithms and programs (legacy instructions)
+================================================================
+
+Compilation, and execution of generated code, are done from the command
+line interface.
+
+The code can be built with "make" from the main directory.  This will
+build an executable file in each Algorithm subdirectory, which can be
+run with various command line parameters to do different things. Run
+each command with option --help to see a summary of the usage
+information.
+
+See the file README for a description of the command-line options for
+the algorithms that were implemented.
+
+
+Invoking the Quipper compiler (legacy instructions)
+================================================
+
+The Quipper compiler is called "quipper", and is located in the
+directory quipper/scripts. The easiest way to use it is to add the
+"scripts" directory to the environment variable PATH. If you move the
+quipper script around, make sure to keep the other scripts in the same
+directory as the quipper script, and to update QUIPPER_BASE in the
+"quipper" and "quipperi" scripts to point to the directory where the
+Quipper sources are located. On the Windows operating system, you
+should use "quipper.bat"; on all other operating systems, just
+"quipper" will do. 
+
+In reality, the "quipper" script is a wrapper around the GHC Haskell
+compiler, providing some pre-processing and setting required
+compilation options. There is also a "quipperi" script for an
+interactive version of the compiler, which is akin to "ghci".
+
+To try this out, the directory "tests" contains various small
+stand-alone programs that can be compiled with Quipper, and are useful
+for demonstrating the basic Quipper idiom. Each program can be
+compiled and run like this:
+
+For example:
+
+# to compile and run on Unix (or on Windows with the MSYS/bash):
+quipper And_gate.hs
+./And_gate
+
+# to compile and run on Windows with cmd.exe:
+quipper.bat And_gate.hs
+And_gate
+
+Note that there is also a Makefile, so "make" can be used to build the
+programs as well.
+
+If the previewer is working properly, the circuit should show up in
+Acrobat Reader. If not, either change "Preview" to "EPS" in the file
+(for PostScript output), or trouble-shoot the previewer installation
+(if you are on Windows, see INSTALLING) and/or contact Benoit Valiron
+<benoit.valiron@monoidal.net> or Peter Selinger
+<selinger@mathstat.dal.ca> for help.
+
+The naming of built-in gates and many operators can be found out by
+looking at the documentation of the "Quipper" module (the main public
+interface of the Quipper system).
+
+
+Troubleshooting Guidelines
+==========================
+
+In case of problems, please contact
+
+ * Benoit Valiron <benoit.valiron@monoidal.net>
+ * Peter Selinger <selinger@mathstat.dal.ca>
